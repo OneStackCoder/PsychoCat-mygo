@@ -51,7 +51,11 @@ jobs:
           GOARCH: ${{ matrix.goarch }}
         run: |
           mkdir -p dist
-          go build -trimpath -ldflags="-s -w" -o "dist/${{ matrix.name }}" .
+          ldflags="-s -w"
+          if [ "$GOOS" = "windows" ]; then
+            ldflags="$ldflags -H=windowsgui"
+          fi
+          go build -trimpath -ldflags="$ldflags" -o "dist/${{ matrix.name }}" .
 
       - name: Upload to release
         env:
